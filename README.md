@@ -1,5 +1,5 @@
 # PI Cards Helper
-Tool that generate `75%` *PlayerInventory* in ***Plants vs. Zombies Heroes***
+Tool that generate `75%` **PlayerInventory** in ***Plants vs. Zombies Heroes***
 
 ## PI stuff
 Split into 3 sections:
@@ -36,3 +36,6 @@ Lazy
 
 ### Currencies
 Lazy
+
+## Credits
+* Niels Lohmann for [his awesome JSON parser](https://github.com/nlohmann/json)
