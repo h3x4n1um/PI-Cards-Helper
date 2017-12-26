@@ -1,0 +1,34 @@
+# depslib dependency file v1.0
+1514299857 source:d:\bo\code\c++\pi_cards_helper\main.cpp
+	<json.hpp>
+	<fstream>
+
+1501838652 d:\bo\code\c++\pi_cards_helper\json.hpp
+	<algorithm>
+	<array>
+	<cassert>
+	<cctype>
+	<ciso646>
+	<cmath>
+	<cstddef>
+	<cstdint>
+	<cstdlib>
+	<cstring>
+	<forward_list>
+	<functional>
+	<initializer_list>
+	<iomanip>
+	<iostream>
+	<iterator>
+	<limits>
+	<locale>
+	<map>
+	<memory>
+	<numeric>
+	<sstream>
+	<stdexcept>
+	<string>
+	<type_traits>
+	<utility>
+	<vector>
+
