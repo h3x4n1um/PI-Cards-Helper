@@ -1,5 +1,5 @@
-# PI-Cards-Helper
-Tool that generate 75% PlayerInventory of Plants vs. Zombies Heroes
+# PI Cards Helper
+Tool that generate `75%` *PlayerInventory* in ***Plants vs. Zombies Heroes***
 
 ## PI stuff
 Split into 3 sections:
