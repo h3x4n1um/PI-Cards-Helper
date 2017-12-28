@@ -1,6 +1,6 @@
 # depslib dependency file v1.0
-1514299857 source:d:\bo\code\c++\pi_cards_helper\main.cpp
-	<json.hpp>
+1514461099 source:d:\bo\code\c++\pi_cards_helper\main.cpp
+	"json.hpp"
 	<fstream>
 
 1501838652 d:\bo\code\c++\pi_cards_helper\json.hpp

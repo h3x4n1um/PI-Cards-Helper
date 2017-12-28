@@ -4,11 +4,6 @@
 using namespace std;
 using namespace nlohmann;
 
-void _error(){
-    cerr << '\n' << R"(Error! "cards.json" (or "cards.txt") not found or not correct format!!!)" << "\n\n";
-    system("pause");
-}
-
 const unsigned char heroes[1024] = {
     0x12, 0x0D, 0x0A, 0x09, 0x50, 0x72, 0x6F, 0x66, 0x65, 0x73, 0x73, 0x6F, 0x72, 0x10, 0x01,
     0x12, 0x0F, 0x0A, 0x0B, 0x53, 0x63, 0x6F, 0x72, 0x74, 0x63, 0x68, 0x77, 0x6F, 0x6F, 0x64, 0x10, 0x01,
@@ -46,6 +41,25 @@ const vector <string> unhandle = {
     "cheats"
 };
 
+void _error(){
+    cerr << '\n' << R"(Error! "cards.json" (or "cards.txt") not found or not correct format!!!)" << "\n\n";
+    system("pause");
+}
+
+string cardIDtoHex(int cardID){
+    string res;
+    if (cardID <= 0x7f) res = res + (char) 0x0a + (char) 0x04 + (char) 0x08 + (char) cardID;
+    else{
+        res = res + (char) 0x0a + (char) 0x05 + (char) 0x08;
+        int secondByte = floor((float) cardID / 0x100) * 2;
+        int firstByte = cardID - (secondByte / 2) * 0x100;
+        if (firstByte > 0x7f) secondByte = secondByte + 1;
+        else firstByte = firstByte + 0x80;
+        res = res + (char) firstByte + (char) secondByte;
+    }
+    return res + (char) 0x10 + (char) 0x4;
+}
+
 json js;
 ifstream input;
 ofstream output;
@@ -57,15 +71,15 @@ int main(){
     puts("Credits: nlohmann for his awesome JSON parser");
     puts("Note: Currently, this tool only create 75% of the PI, the 25% remain is copy-pasted (this step is depend on you and your knowledge)\n");
     printf(R"(Enter "cards.json" (or "cards.txt") file path: )");
-    string file_path;
-    getline(cin, file_path);
+    string filePath;
+    getline(cin, filePath);
     try{
-        input.open(file_path);
+        input.open(filePath);
         input >> js;
         input.close();
-        for (int i = file_path.size() - 1; i >= 0; --i){
-            if (file_path[i] == 0x5c){
-                file_path = file_path.substr(0, i + 1);
+        for (int i = filePath.size() - 1; i >= 0; --i){
+            if (filePath[i] == 0x5c){
+                filePath = filePath.substr(0, i + 1);
                 break;
             }
         }
@@ -85,7 +99,8 @@ int main(){
                 listSet.push_back(temp);
             }
         }
-        printf(R"([CASE SENSITIVE] Choose what you want to include (look at "set"), default will select all except
+        printf(
+R"([CASE SENSITIVE] Choose what you want to include (look at "set"), default will select all except
     ""
     "null"
     "Board"
@@ -95,7 +110,7 @@ int main(){
     "Cheats"
     "Blank"
     "cheats"
-if you want default just type "default" or ENTER: )");
+if you want default just type "default": )");
         getline(cin, chooseSet);
         chooseSet = chooseSet + " ";
         while (chooseSet.find(" ") != string::npos){
@@ -109,38 +124,14 @@ if you want default just type "default" or ENTER: )");
                 temp.erase(temp.begin());
                 temp.erase(temp.end() - 1);
             }
-            if ((handle.size() == 1 && handle[0] == "default") || handle.size() == 0){
+            if (handle.size() == 1 && handle[0] == "default"){
                 if (find(unhandle.begin(), unhandle.end(), temp) == unhandle.end()){
-                    int card_id = atoi(i.first.c_str());
-                    if (card_id <= 0x7f){
-                        result = result + (char) 0x0a + (char) 0x04 + (char) 0x08 + (char) card_id;
-                    }
-                    else{
-                        result = result + (char) 0x0a + (char) 0x05 + (char) 0x08;
-                        int second_byte = floor((float) card_id / 0x100) * 2;
-                        int first_byte = card_id - (second_byte / 2) * 0x100;
-                        if (first_byte > 0x7f) second_byte = second_byte + 1;
-                        else first_byte = first_byte + 0x80;
-                        result = result + (char) first_byte + (char) second_byte;
-                    }
-                    result = result + (char) 0x10 + (char) 0x04;
+                    result = result + cardIDtoHex(atoi(i.first.c_str()));
                 }
             }
             else{
                 if (find(handle.begin(), handle.end(), temp) != handle.end()){
-                    int card_id = atoi(i.first.c_str());
-                    if (card_id <= 0x7f){
-                        result = result + (char) 0x0a + (char) 0x04 + (char) 0x08 + (char) card_id;
-                    }
-                    else{
-                        result = result + (char) 0x0a + (char) 0x05 + (char) 0x08;
-                        int second_byte = floor((float) card_id / 0x100) * 2;
-                        int first_byte = card_id - (second_byte / 2) * 0x100;
-                        if (first_byte > 0x7f) second_byte = second_byte + 1;
-                        else first_byte = first_byte + 0x80;
-                        result = result + (char) first_byte + (char) second_byte;
-                    }
-                    result = result + (char) 0x10 + (char) 0x04;
+                    result = result + cardIDtoHex(atoi(i.first.c_str()));
                 }
             }
         }
@@ -150,11 +141,11 @@ if you want default just type "default" or ENTER: )");
         return 1;
     }
 
-    output.open(file_path + "PlayerInventory_75%", ios::binary);
+    output.open(filePath + "PlayerInventory75%", ios::binary);
     output.write((char *)&result[0], result.size());
     output.write((char *)&heroes[0], 0x13f);
     output.close();
-    puts("\nDone! Please check PlayerInventory_75%\n");
+    puts("\nDone! Please check PlayerInventory75%\n");
     system("pause");
     return 0;
 }
