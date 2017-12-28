@@ -4,10 +4,8 @@
 using namespace std;
 using namespace nlohmann;
 
-void _error(){
-    cerr << '\n' << R"(Error! "cards.json" (or "cards.txt") not found or not correct format!!!)" << "\n\n";
-    system("pause");
-}
+void _error();
+string myNameIsJeff(int cardId);
 
 const unsigned char heroes[1024] = {
     0x12, 0x0D, 0x0A, 0x09, 0x50, 0x72, 0x6F, 0x66, 0x65, 0x73, 0x73, 0x6F, 0x72, 0x10, 0x01,
@@ -53,17 +51,19 @@ string result, chooseSet;
 vector <string> handle, listSet;
 
 int main(){
-    puts("PI Cards Helper made by H3x4n1um version 2.1");
-    puts("Credits: nlohmann for his awesome JSON parser");
-    puts("Note: Currently, this tool only create 75% of the PI, the 25% remain is copy-pasted (this step is depend on you and your knowledge)\n");
-    printf(R"(Enter "cards.json" (or "cards.txt") file path: )");
-    string file_path;
+	int card_id;
+	printf(R"(PI Cards Helper version 2.1 (made by H3x4n1um)
+Credits: nlohmann for his awesome JSON parser
+Note: Currently, this tool only creates 75%% of the PI, the remain 25%% is copy-pasted (this step depends on you and your knowledge)
+
+Enter "cards.json" (or "cards.txt") file path: )");
+    string file_path, temp;
     getline(cin, file_path);
     try{
         input.open(file_path);
         input >> js;
         input.close();
-        for (int i = file_path.size() - 1; i >= 0; --i){
+        for (int i = file_path.size() - 1; i >= 0; i--){
             if (file_path[i] == 0x5c){
                 file_path = file_path.substr(0, i + 1);
                 break;
@@ -74,12 +74,11 @@ int main(){
         _error();
         return 1;
     }
-
     try{
         puts("");
         puts(R"(List of available "set":)");
         for (auto i : js.get<map <string, json> >()){
-            string temp = i.second.at("set").dump();
+            temp = i.second.at("set").dump();
             if (find(listSet.begin(), listSet.end(), temp) == listSet.end()){
                 cout << "   " << temp << endl;
                 listSet.push_back(temp);
@@ -97,51 +96,47 @@ int main(){
     "cheats"
 if you want default just type "default" or ENTER: )");
         getline(cin, chooseSet);
-        chooseSet = chooseSet + " ";
+        chooseSet += " ";
         while (chooseSet.find(" ") != string::npos){
             handle.push_back(chooseSet.substr(0, chooseSet.find(" ")));
             chooseSet.erase(0, chooseSet.find(" ") + 1);
         }
-
         for (auto i : js.get<map <string, json> >()){
-            string temp = i.second.at("set").dump();
+            temp = i.second.at("set").dump();
             if (temp[0] == '"' && temp[temp.size() - 1] == '"'){
                 temp.erase(temp.begin());
                 temp.erase(temp.end() - 1);
             }
-            if ((handle.size() == 1 && handle[0] == "default") || handle.size() == 0){
-                if (find(unhandle.begin(), unhandle.end(), temp) == unhandle.end()){
-                    int card_id = atoi(i.first.c_str());
-                    if (card_id <= 0x7f){
+            if (((handle.size() == 1 && handle[0] == "default") || handle.size() == 0)&&(find(unhandle.begin(), unhandle.end(), temp) == unhandle.end())){
+                card_id = atoi(i.first.c_str());
+                /*if (card_id <= 0x7f){
+                    result = result + (char) 0x0a + (char) 0x04 + (char) 0x08 + (char) card_id;
+                }
+                else{
+                    result = result + (char) 0x0a + (char) 0x05 + (char) 0x08;
+                    second_byte = floor((float) card_id / 0x100) * 2;
+                    first_byte = card_id - (second_byte / 2) * 0x100;
+                    if (first_byte > 0x7f) second_byte = second_byte + 1;
+                    else first_byte = first_byte + 0x80;
+                    result = result + (char) first_byte + (char) second_byte;
+                }
+                result = result + (char) 0x10 + (char) 0x04;*/
+                result = result + myNameIsJeff(card_id);
+            } else if (find(handle.begin(), handle.end(), temp) != handle.end()){
+                    card_id = atoi(i.first.c_str());
+                    /*if (card_id <= 0x7f){
                         result = result + (char) 0x0a + (char) 0x04 + (char) 0x08 + (char) card_id;
                     }
                     else{
                         result = result + (char) 0x0a + (char) 0x05 + (char) 0x08;
-                        int second_byte = floor((float) card_id / 0x100) * 2;
-                        int first_byte = card_id - (second_byte / 2) * 0x100;
+                        second_byte = floor((float) card_id / 0x100) * 2;
+                        first_byte = card_id - (second_byte / 2) * 0x100;
                         if (first_byte > 0x7f) second_byte = second_byte + 1;
                         else first_byte = first_byte + 0x80;
                         result = result + (char) first_byte + (char) second_byte;
                     }
-                    result = result + (char) 0x10 + (char) 0x04;
-                }
-            }
-            else{
-                if (find(handle.begin(), handle.end(), temp) != handle.end()){
-                    int card_id = atoi(i.first.c_str());
-                    if (card_id <= 0x7f){
-                        result = result + (char) 0x0a + (char) 0x04 + (char) 0x08 + (char) card_id;
-                    }
-                    else{
-                        result = result + (char) 0x0a + (char) 0x05 + (char) 0x08;
-                        int second_byte = floor((float) card_id / 0x100) * 2;
-                        int first_byte = card_id - (second_byte / 2) * 0x100;
-                        if (first_byte > 0x7f) second_byte = second_byte + 1;
-                        else first_byte = first_byte + 0x80;
-                        result = result + (char) first_byte + (char) second_byte;
-                    }
-                    result = result + (char) 0x10 + (char) 0x04;
-                }
+                    result = result + (char) 0x10 + (char) 0x04;*/
+                    result = result + myNameIsJeff(card_id);
             }
         }
     }
@@ -149,7 +144,6 @@ if you want default just type "default" or ENTER: )");
         _error();
         return 1;
     }
-
     output.open(file_path + "PlayerInventory_75%", ios::binary);
     output.write((char *)&result[0], result.size());
     output.write((char *)&heroes[0], 0x13f);
@@ -157,4 +151,27 @@ if you want default just type "default" or ENTER: )");
     puts("\nDone! Please check PlayerInventory_75%\n");
     system("pause");
     return 0;
+}
+
+void _error(){
+    cerr << '\n' << R"(Error! "cards.json"/"cards.txt") not found / not in a correct format!!!)" << "\n\n";
+    system("pause");
+}
+
+//prototype of Jeff. Jeff is my only son. No touching & No homo.
+string myNameIsJeff(int cardId){
+	string rtn;
+	int first_byte, second_byte;
+	if (cardId <= 0x7f){
+        rtn = rtn + (char) 0x0a + (char) 0x04 + (char) 0x08 + (char) cardId;
+    } else {
+        rtn = rtn + (char) 0x0a + (char) 0x05 + (char) 0x08;
+        second_byte = floor((float) cardId / 0x100) * 2;
+        first_byte = cardId - (second_byte / 2) * 0x100;
+        if (first_byte > 0x7f) second_byte++;
+        else first_byte += 0x80;
+        rtn = rtn + (char) first_byte + (char) second_byte;
+    }
+    rtn = rtn + (char) 0x10 + (char) 0x04;
+    return rtn;
 }
