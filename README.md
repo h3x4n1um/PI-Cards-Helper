@@ -18,7 +18,7 @@ Split into 4 sections:
 ## `0xa` (card)
 `0xa` **number of byte** `0x8` **card id** `0x10` **number of copy**
 * `0x8` stand for after it is **card id**.
-* **Card id**:  If the first byte is `0x0`-`0x7f` (`0`-`127` decimal) then it is just 1-byte and used as is. If the first byte has 7th bit (`0x80`-`0xff`, `128`-`255` decimal) the parser reads the second byte and do different things.
+* **Card id**:  If the first byte is `0x0`-`0x7f` (`0`-`127` decimal) then it is just 1-byte and used as is. If the first byte has 7th bit (`0x80`-`0xff`, `128`-`255` decimal) the parser reads the second byte and do different things (little-endian based?).
     * If the second byte is `0x0` the first byte gets *AND*ed with `0x7f`, which means the 7th bit gets removed.
     * If the second byte is `0x1` then the first byte is used as is (with 7th bit intact)
     * If the second byte is `0x2` then first byte gets *AND*ed with `0x7f` and *OR*ed with `0x100` (7th bit removed and 8th bit set)
@@ -27,7 +27,21 @@ Split into 4 sections:
     * If the second byte is `0x5` then first byte gets *OR*ed with `0x200` (9th bit set)
     * If the second byte is `0x6` then first byte gets *AND*ed with `0x7f` and *OR*ed with `0x400` (7th bit removed and 10th bit set)
     * If the second byte is `0x7` then first byte gets *OR*ed with `0x400` (10th bit set)
-    *  ~~This pattern repeats until `0xff7f`~~ (`135085` would be `0xad9f08`). This number system is called **RTON number system** because it from ***PvZ 2*** RTON format
+    *  ~~This pattern repeats until `0xff7f`~~ (`135085` would be `0xad9f08`). If second byte above `0xff` apply this rule to generate the new second byte and third byte (maybe it limit is fouth byte?). This number system is called **RTON number system** because it from ***PvZ 2*** RTON format
+    * Psuedo code
+    ```cpp
+    string int2RTONnum(int i){
+        string res;
+        if (i <= 0x7f) return res = (char) i;
+        int secondByte = floor((float) i / 0x100) * 2;
+        int firstByte = i - (secondByte / 2) * 0x100;
+        if (firstByte > 0x7f) ++secondByte;
+        else firstByte = firstByte + 0x80;
+        res = res + (char) firstByte;
+        if (secondByte > 0xff) return res + int2RTONnum(secondByte);
+        return res + (char) secondByte;
+    }
+    ```
 * `0x10` stand for after it is **number of copy**
 
 ## `0x12` (hero)

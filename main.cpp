@@ -4,7 +4,7 @@
 using namespace std;
 using namespace nlohmann;
 
-const unsigned char heroes[1024] = {
+const unsigned char heroes[] = {
     0x12, 0x0D, 0x0A, 0x09, 0x50, 0x72, 0x6F, 0x66, 0x65, 0x73, 0x73, 0x6F, 0x72, 0x10, 0x01,
     0x12, 0x0F, 0x0A, 0x0B, 0x53, 0x63, 0x6F, 0x72, 0x74, 0x63, 0x68, 0x77, 0x6F, 0x6F, 0x64, 0x10, 0x01,
     0x12, 0x0C, 0x0A, 0x08, 0x4E, 0x69, 0x67, 0x68, 0x74, 0x43, 0x61, 0x70, 0x10, 0x01,
@@ -46,30 +46,28 @@ void _error(){
     system("pause");
 }
 
-string cardIDtoHex(int cardID){
+string int2RTONnum(int i){
     string res;
-    if (cardID <= 0x7f) res = res + (char) 0x0a + (char) 0x04 + (char) 0x08 + (char) cardID;
-    else{
-        res = res + (char) 0x0a + (char) 0x05 + (char) 0x08;
-        int secondByte = floor((float) cardID / 0x100) * 2;
-        int firstByte = cardID - (secondByte / 2) * 0x100;
-        if (firstByte > 0x7f) secondByte = secondByte + 1;
-        else firstByte = firstByte + 0x80;
-        res = res + (char) firstByte + (char) secondByte;
-    }
-    return res + (char) 0x10 + (char) 0x4;
+    if (i <= 0x7f) return res = (char) i;
+    int secondByte = floor((float) i / 0x100) * 2;
+    int firstByte = i - (secondByte / 2) * 0x100;
+    if (firstByte > 0x7f) ++secondByte;
+    else firstByte = firstByte + 0x80;
+    res = res + (char) firstByte;
+    if (secondByte > 0xff) return res + int2RTONnum(secondByte);
+    return res + (char) secondByte;
 }
 
 json js;
 ifstream input;
 ofstream output;
-string result, chooseSet;
-vector <string> handle, listSet;
+string result;
 
 int main(){
     puts("PI Cards Helper made by H3x4n1um version 2.1");
     puts("Credits: nlohmann for his awesome JSON parser");
-    puts("Note: Currently, this tool only create 75% of the PI, the 25% remain is copy-pasted (this step is depend on you and your knowledge)\n");
+    puts("Note: Currently, this tool create the PI with all cards");
+    puts("TODO: Make this tool can edit the input PI to have all cards (I have an algorithm but I'll implement it later)\n");
     printf(R"(Enter "cards.json" (or "cards.txt") file path: )");
     string filePath;
     getline(cin, filePath);
@@ -90,50 +88,15 @@ int main(){
     }
 
     try{
-        puts("");
-        puts(R"(List of available "set":)");
-        for (auto i : js.get<map <string, json> >()){
-            string temp = i.second.at("set").dump();
-            if (find(listSet.begin(), listSet.end(), temp) == listSet.end()){
-                cout << "   " << temp << endl;
-                listSet.push_back(temp);
-            }
-        }
-        printf(
-R"([CASE SENSITIVE] Choose what you want to include (look at "set"), default will select all except
-    ""
-    "null"
-    "Board"
-    "Token"
-    "Superpower"
-    "Hero"
-    "Cheats"
-    "Blank"
-    "cheats"
-if you want default just type "default": )");
-        getline(cin, chooseSet);
-        chooseSet = chooseSet + " ";
-        while (chooseSet.find(" ") != string::npos){
-            handle.push_back(chooseSet.substr(0, chooseSet.find(" ")));
-            chooseSet.erase(0, chooseSet.find(" ") + 1);
-        }
-
         for (auto i : js.get<map <string, json> >()){
             string temp = i.second.at("set").dump();
             if (temp[0] == '"' && temp[temp.size() - 1] == '"'){
                 temp.erase(temp.begin());
                 temp.erase(temp.end() - 1);
             }
-            if (handle.size() == 1 && handle[0] == "default"){
-                if (find(unhandle.begin(), unhandle.end(), temp) == unhandle.end()){
-                    result = result + cardIDtoHex(atoi(i.first.c_str()));
-                }
-            }
-            else{
-                if (find(handle.begin(), handle.end(), temp) != handle.end()){
-                    result = result + cardIDtoHex(atoi(i.first.c_str()));
-                }
-            }
+			if (find(unhandle.begin(), unhandle.end(), temp) == unhandle.end()){
+				result = result + (char) 0xa + (char) (int2RTONnum(atoi(i.first.c_str())).size() + 3) + (char) 0x8 + int2RTONnum(atoi(i.first.c_str())) + (char) 0x10 + (char) 0x4;
+			}
         }
     }
     catch (out_of_range e){
@@ -141,11 +104,11 @@ if you want default just type "default": )");
         return 1;
     }
 
-    output.open(filePath + "PlayerInventory75%", ios::binary);
+    output.open(filePath + "PlayerInventoryAllCards", ios::binary);
     output.write((char *)&result[0], result.size());
-    output.write((char *)&heroes[0], 0x13f);
+    //output.write((char *)&heroes[0], 0x13f);
     output.close();
-    puts("\nDone! Please check PlayerInventory75%\n");
+    puts("\nDone!\n");
     system("pause");
     return 0;
 }
