@@ -8,6 +8,7 @@ Split into 4 sections:
 * `0x20` (gem)
 * `0x28`
 * `0x5a`
+* `0xbb` (spark)
 * `0x60` (lifetime tickets)
 * `0x72`
 
@@ -25,21 +26,35 @@ Split into 4 sections:
     * If the second byte is `0x3` then first byte gets *OR*ed with `0x100` (8th bit set)
     * If the second byte is `0x4` then first byte gets *AND*ed with `0x7f` and *OR*ed with `0x200` (7th bit removed and 9th bit set)
     * If the second byte is `0x5` then first byte gets *OR*ed with `0x200` (9th bit set)
-    * If the second byte is `0x6` then first byte gets *AND*ed with `0x7f` and *OR*ed with `0x400` (7th bit removed and 10th bit set)
-    * If the second byte is `0x7` then first byte gets *OR*ed with `0x400` (10th bit set)
-    *  ~~This pattern repeats until `0xff7f`~~ (`135085` would be `0xad9f08`). If second byte above `0xff` apply this rule to generate the new second byte and third byte (maybe it limit is fouth byte?). This number system is called **RTON number system** because it from ***PvZ 2*** RTON format
-    * Psuedo code
+    * If the second byte ixs `0x6` then first byte gets *AND*ed with `0x7f` and *OR*ed with `0x300` (7th bit removed and 10th bit set)
+    * If the second byte is `0x7` then first byte gets *OR*ed with `0x300` (10th bit set)
+    *  This pattern repeats ~~until `0xff7f`~~ (`0x20fad` (`135085`) would be `0xad9f08`). If second byte above `0xff` apply this rule to generate the new second byte and third byte (maybe it limit is fouth byte?). This number system is called **RTON number system** because it from ***PvZ 2*** RTON format
+    * Psuedo code:
     ```cpp
-    string int2RTONnum(int i){
-        string res;
-        if (i <= 0x7f) return res = (char) i;
-        int secondByte = floor((float) i / 0x100) * 2;
-        int firstByte = i - (secondByte / 2) * 0x100;
+    //this implementation still has bug when convert 0xbe87f407 to 0xfd03be (correct would be 0x7e81df3b), kinda strange even I can't find why it would be 0x7e81df3b???
+    unsigned int RTONnum2int(unsigned int q){
+        if (log256(q) < 1 && q > 0x7f) return 0xffffffff; //return max when RTON number has 1 byte and > 0x7f
+        unsigned int lastByte = q % 0x100;
+        q /= 0x100;
+        while(q > 0){
+            unsigned int nearLastByte = q % 0x100;
+            q /= 0x100;
+            if (lastByte % 2 == 0) nearLastByte &= 0x7f;
+            nearLastByte += 0x100 * floor((float) lastByte / 2);
+            lastByte = nearLastByte;
+        }
+        return lastByte;
+    }
+
+    unsigned int int2RTONnum(unsigned int q){
+        if (q <= 0x7f) return q;
+        unsigned int firstByte = q % 0x100;
+        q /= 0x100;
+        unsigned int secondByte = q * 2;
         if (firstByte > 0x7f) ++secondByte;
-        else firstByte = firstByte + 0x80;
-        res = res + (char) firstByte;
-        if (secondByte > 0xff) return res + int2RTONnum(secondByte);
-        return res + (char) secondByte;
+        else firstByte += 0x80; //reverse & 0x7f
+        unsigned int newSecondByte = int2RTONnum(secondByte);
+        return firstByte * pow(0x100, ceil(log256(newSecondByte)) ? ceil(log256(newSecondByte)) : 1) + newSecondByte;
     }
     ```
 * `0x10` stand for after it is **number of copy**
@@ -83,6 +98,10 @@ The Smash | Gargantuar | Zombie
 
 ## `0x28`
 ???
+
+## `0xbb` (spark)
+`0xbb` **number of spark**
+* **Number of spark** use **RTON number system**
 
 ## `0x5a`
 ???
