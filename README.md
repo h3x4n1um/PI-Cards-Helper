@@ -29,7 +29,7 @@ Can be split into the following sections:
     * If the second byte ixs `0x6`, the first byte gets *AND*ed with `0x7f` and *OR*ed with `0x300` (7th bit removed and 10th bit set)
     * If the second byte is `0x7`, the first byte gets *OR*ed with `0x300` (10th bit set)
     *  This pattern repeats ~~until `0xff7f`~~ (`0x20fad` (`135085`) would be `0xad9f08`). If second byte above `0xff` apply this rule to generate the new second byte and third byte (maybe it limit is fouth byte?). This number system is called **RTON number system** because it from ***PvZ 2*** RTON format
-    * Psuedo code:
+    * Pseudo code:
     ```cpp
     //this implementation still has bug when convert 0xbe87f407 to 0xfd03be (correct would be 0x7e81df3b), kinda strange even I can't find why it would be 0x7e81df3b???
     unsigned int RTONnum2int(unsigned int q){
