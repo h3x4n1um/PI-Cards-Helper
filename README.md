@@ -2,7 +2,7 @@
 Tool that generate **PlayerInventoryAllCards** in ***Plants vs. Zombies Heroes***
 
 # PlayerInventory stuff
-Split into follow sections:
+Can be split into the following sections:
 * `0xa` (card)
 * `0x12` (hero)
 * `0x20` (gem)
@@ -14,12 +14,12 @@ Split into follow sections:
 
 ## `xx yy` (general section)
 * `xx` is the **section unique id**
-* `yy` is the **number of byte follow it**
+* `yy` is the **number of bytes following it**
 
 ## `0xa` (card)
 `0xa` **number of byte** `0x8` **card id** `0x10` **number of copy**
 * `0x8` stand for after it is **card id**.
-* **Card id**:  If the first byte is `0x0`-`0x7f` (`0`-`127` decimal) then it is just 1-byte and used as is. If the first byte has 7th bit (`0x80`-`0xff`, `128`-`255` decimal) the parser reads the second byte and do different things (little-endian based?).
+* **Card id**:  If the first byte is `0x0`-`0x7f` (`0`-`127` decimal) then it is just 1-byte and used as is. If the first byte has a 7th bit (`0x80`-`0xff`, `128`-`255` decimal) the parser reads the second byte and do different things (little-endian based?).
     * If the second byte is `0x0` the first byte gets *AND*ed with `0x7f`, which means the 7th bit gets removed.
     * If the second byte is `0x1` then the first byte is used as is (with 7th bit intact)
     * If the second byte is `0x2` then first byte gets *AND*ed with `0x7f` and *OR*ed with `0x100` (7th bit removed and 8th bit set)
