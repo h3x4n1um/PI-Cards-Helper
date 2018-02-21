@@ -3,31 +3,31 @@ Tool that generate **PlayerInventoryAllCards** in ***Plants vs. Zombies Heroes**
 
 # PlayerInventory stuff
 Can be split into the following sections:
-* `0xa` (card)
-* `0x12` (hero)
-* `0x20` (gem)
+* `0xa` (cards)
+* `0x12` (heroes)
+* `0x20` (gems)
 * `0x28`
 * `0x5a`
-* `0xbb` (spark)
+* `0xbb` (sparks)
 * `0x60` (lifetime tickets)
 * `0x72`
 
 ## `xx yy` (general section)
-* `xx` is the **section unique id**
+* `xx` is the **section's unique id**
 * `yy` is the **number of bytes following it**
 
-## `0xa` (card)
-`0xa` **number of byte** `0x8` **card id** `0x10` **number of copy**
-* `0x8` stand for after it is **card id**.
-* **Card id**:  If the first byte is `0x0`-`0x7f` (`0`-`127` decimal) then it is just 1-byte and used as is. If the first byte has a 7th bit (`0x80`-`0xff`, `128`-`255` decimal) the parser reads the second byte and do different things (little-endian based?).
-    * If the second byte is `0x0` the first byte gets *AND*ed with `0x7f`, which means the 7th bit gets removed.
-    * If the second byte is `0x1` then the first byte is used as is (with 7th bit intact)
-    * If the second byte is `0x2` then first byte gets *AND*ed with `0x7f` and *OR*ed with `0x100` (7th bit removed and 8th bit set)
-    * If the second byte is `0x3` then first byte gets *OR*ed with `0x100` (8th bit set)
-    * If the second byte is `0x4` then first byte gets *AND*ed with `0x7f` and *OR*ed with `0x200` (7th bit removed and 9th bit set)
-    * If the second byte is `0x5` then first byte gets *OR*ed with `0x200` (9th bit set)
-    * If the second byte ixs `0x6` then first byte gets *AND*ed with `0x7f` and *OR*ed with `0x300` (7th bit removed and 10th bit set)
-    * If the second byte is `0x7` then first byte gets *OR*ed with `0x300` (10th bit set)
+## `0xa` (cards)
+`0xa` **number of bytes** `0x8` **card id** `0x10` **number of copies**
+* The latter `0x8` represents **card id**.
+* **Card id**:  If the first byte is `0x0`-`0x7f` (`0`-`127` decimal) then it will be just 1-byte(?) and used as is. If the first byte has a 7th bit (`0x80`-`0xff`, `128`-`255` decimal) the parser then reads the second byte and do different things depending on it (little-endian based?). //wat?
+    * If the second byte is `0x0`, the first byte will be *AND*ed with `0x7f`, which means the 7th bit gets removed.
+    * If the second byte is `0x1`, the first byte will be used as is (with 7th bit intact)
+    * If the second byte is `0x2`, the first byte will be *AND*ed with `0x7f` and *OR*ed with `0x100` (7th bit removed and 8th bit set)
+    * If the second byte is `0x3`, the first byte will be *OR*ed with `0x100` (8th bit set)
+    * If the second byte is `0x4`, the first byte will be *AND*ed with `0x7f` and *OR*ed with `0x200` (7th bit removed and 9th bit set)
+    * If the second byte is `0x5`, the first byte gets *OR*ed with `0x200` (9th bit set)
+    * If the second byte ixs `0x6`, the first byte gets *AND*ed with `0x7f` and *OR*ed with `0x300` (7th bit removed and 10th bit set)
+    * If the second byte is `0x7`, the first byte gets *OR*ed with `0x300` (10th bit set)
     *  This pattern repeats ~~until `0xff7f`~~ (`0x20fad` (`135085`) would be `0xad9f08`). If second byte above `0xff` apply this rule to generate the new second byte and third byte (maybe it limit is fouth byte?). This number system is called **RTON number system** because it from ***PvZ 2*** RTON format
     * Psuedo code:
     ```cpp
@@ -60,11 +60,11 @@ Can be split into the following sections:
 * `0x10` stand for after it is **number of copy**
 
 ## `0x12` (hero)
-`0x12` **number of byte** `0xa` **(length of hero codename)** **(hero codename)** `0x10` **available**
-* `0xa` stand for after it is **length of hero codename** and **hero codename**
+`0x12` **number of bytes** `0xa` **(length of hero's codename)** **(hero's codename)** `0x10` **availablility**
+* `0xa` stand for after it is **length of hero's codename** and **hero's codename** //sry, after wat?
 * `0x10` stand for after it is availability (boolean)
     * `0x1` is true which mean player can use that hero
-    * `0x0` is false opposite with `0x1` but the game never use it, instead of it doesn't write any info about the hero to **PlayerInventory**
+    * `0x0` is false, opposite with `0x1` but the game never use it, instead it doesn't write any info about the hero to **PlayerInventory**
 * **Hero codename** cheatsheet
 
 Hero name | Codename | Faction
@@ -94,21 +94,21 @@ The Smash | Gargantuar | Zombie
 
 ## `0x20` (gem)
 `0x20` **number of gem**
-* **Number of gem** use **RTON number system**
+* This uses the **RTON numbering system**
 
 ## `0x28`
 ???
 
 ## `0xbb` (spark)
 `0xbb` **number of spark**
-* **Number of spark** use **RTON number system**
+* This uses the **RTON numbering system**
 
 ## `0x5a`
 ???
 
 ## `0x60` (lifetime tickets)
 `0x60` **number of lifetime tickets**
-* **Number of lifetime tickets** use **RTON number system**
+* This uses the **RTON numbering system**
 
 ## `0x72`
 ???
