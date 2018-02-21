@@ -1,5 +1,5 @@
 # PI Cards Helper
-Tool that generate **PlayerInventoryAllCards** in ***Plants vs. Zombies Heroes***
+This tool generates **PlayerInventoryAllCards** in ***Plants vs. Zombies Heroes***
 
 # PlayerInventory stuff
 Can be split into the following sections:
