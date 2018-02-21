@@ -1,8 +1,8 @@
 # PI Cards Helper
-Tool that generate `75%` **PlayerInventory** in ***Plants vs. Zombies Heroes***
+Tool that generate **PlayerInventoryAllCards** in ***Plants vs. Zombies Heroes***
 
 # PlayerInventory stuff
-Split into 4 sections:
+Split into follow sections:
 * `0xa` (card)
 * `0x12` (hero)
 * `0x20` (gem)
