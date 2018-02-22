@@ -19,7 +19,7 @@ Can be split into the following sections:
 ## `0xa` (cards)
 `0xa` **number of bytes** `0x8` **card id** `0x10` **number of copies**
 * The latter `0x8` represents **card id**.
-* **Card id**:  If the first byte is `0x0`-`0x7f` (`0`-`127` decimal) then it will be just 1-byte(?) and used as is. If the first byte has a 7th bit (`0x80`-`0xff`, `128`-`255` decimal) the parser then reads the second byte and do different things depending on it (little-endian based?). //wat?
+* **Card id**:  If the first byte is `0x0`-`0x7f` (`0`-`127` decimal) then it will be just 1-byte(?) and used as is. If the first byte has a 7th bit (`0x80`-`0xff`, `128`-`255` decimal) the parser then reads the second byte and do different things depending on it (little-endian based?)
     * If the second byte is `0x0`, the first byte will be *AND*ed with `0x7f`, which means the 7th bit gets removed.
     * If the second byte is `0x1`, the first byte will be used as is (with 7th bit intact)
     * If the second byte is `0x2`, the first byte will be *AND*ed with `0x7f` and *OR*ed with `0x100` (7th bit removed and 8th bit set)
@@ -31,7 +31,7 @@ Can be split into the following sections:
     *  This pattern repeats ~~until `0xff7f`~~ (`0x20fad` (`135085`) would be `0xad9f08`). If second byte above `0xff` apply this rule to generate the new second byte and third byte (maybe it limit is fouth byte?). This number system is called **RTON number system** because it from ***PvZ 2*** RTON format
     * Pseudo code:
     ```cpp
-    //this implementation still has bug when convert 0xbe87f407 to 0xfd03be (correct would be 0x7e81df3b), kinda strange even I can't find why it would be 0x7e81df3b???
+    //this implementation still has bug when convert 0xbe87f407 to 0xfd03be (correct would be 0x7e81df3b ~ 2 billions), kinda strange even I can't find why it would be 0x7e81df3b???
     unsigned int RTONnum2int(unsigned int q){
         if (log256(q) < 1 && q > 0x7f) return 0xffffffff; //return max when RTON number has 1 byte and > 0x7f
         unsigned int lastByte = q % 0x100;
@@ -61,7 +61,7 @@ Can be split into the following sections:
 
 ## `0x12` (hero)
 `0x12` **number of bytes** `0xa` **(length of hero's codename)** **(hero's codename)** `0x10` **availablility**
-* `0xa` stand for after it is **length of hero's codename** and **hero's codename** //sry, after wat?
+* `0xa` stand for after it is **length of hero's codename** and **hero's codename**
 * `0x10` stand for after it is availability (boolean)
     * `0x1` is true which mean player can use that hero
     * `0x0` is false, opposite with `0x1` but the game never use it, instead it doesn't write any info about the hero to **PlayerInventory**
@@ -93,22 +93,22 @@ Z-Mech | ZMech | Zombie
 The Smash | Gargantuar | Zombie
 
 ## `0x20` (gem)
-`0x20` **number of gem**
-* This uses the **RTON numbering system**
+`0x20` **number of gems**
+* This uses the **RTON number system**
 
 ## `0x28`
 ???
 
 ## `0xbb` (spark)
-`0xbb` **number of spark**
-* This uses the **RTON numbering system**
+`0xbb` **number of sparks**
+* This uses the **RTON number system**
 
 ## `0x5a`
 ???
 
 ## `0x60` (lifetime tickets)
 `0x60` **number of lifetime tickets**
-* This uses the **RTON numbering system**
+* This uses the **RTON number system**
 
 ## `0x72`
 ???
