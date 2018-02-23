@@ -57,13 +57,13 @@ Can be split into the following sections:
         return firstByte * pow(0x100, ceil(log256(newSecondByte)) ? ceil(log256(newSecondByte)) : 1) + newSecondByte;
     }
     ```
-* `0x10` stand for after it is **number of copy**
+* `0x10`: **number of copies**
 
 ## `0x12` (hero)
 `0x12` **number of bytes** `0xa` **(length of hero's codename)** **(hero's codename)** `0x10` **availability**
-* `0xa` stand for after it is **length of hero's codename** and **hero's codename**
-* `0x10` stand for after it is availability (boolean)
-    * `0x1` is true which mean player can use that hero
+* `0xa`: **length of hero's codename** and **hero's codename**
+* `0x10`: availability (boolean)
+    * `0x1` is true, which mean player can use that hero
     * `0x0` is false, opposite with `0x1` but the game never use it, instead it doesn't write any info about the hero to **PlayerInventory**
 * **Hero codename** cheatsheet
 
