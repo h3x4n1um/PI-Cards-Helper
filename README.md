@@ -115,3 +115,24 @@ The Smash | Gargantuar | Zombie
 
 # Credits
 * Niels Lohmann for [his awesome JSON parser](https://github.com/nlohmann/json)
+
+# TODO
+Create a class to easily read and write to file. Something like:
+```cpp
+class PI{
+   public:
+      int read(); //choose int because if function return 0 which mean no error
+      int write();
+      int setHeroes();
+      int setCards();
+      int setGems();
+      int setSparks();
+      int setTickets();
+   private:
+      vector <pair <int, int> > cards; //the first will be card id and second is number of copies
+      vector <string> heroes; //list of hero codename
+      int gems;
+      int sparks;
+      int tickets;
+}
+```
