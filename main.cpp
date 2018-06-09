@@ -1,4 +1,5 @@
 #include "json.hpp"
+#include <iostream>
 #include <fstream>
 
 using namespace std;
@@ -31,7 +32,6 @@ const unsigned char heroes[] = {
 
 const vector <string> unhandle = {
     "",
-    "null",
     "Board",
     "Token",
     "Superpower",
@@ -60,14 +60,13 @@ string int2RTONnum(int i){
 
 json js;
 ifstream input;
-ofstream output;
+ofstream output, debug;
 string result;
 
 int main(){
     puts("PI Cards Helper made by H3x4n1um version 2.1");
     puts("Credits: nlohmann for his awesome JSON parser");
-    puts("Note: Currently, this tool create the PI with all cards");
-    puts("TODO: Make this tool can edit the input PI to have all cards (I have an algorithm but I'll implement it later)\n");
+    puts("Note: Currently, this tool create the PI with all cards\n");
     printf(R"(Enter "cards.json" (or "cards.txt") file path: )");
     string filePath;
     getline(cin, filePath);
@@ -86,17 +85,17 @@ int main(){
         _error();
         return 1;
     }
+    debug.open(filePath + "PI_Cards_Helper_debug.log");
 
     try{
         for (auto i : js.get<map <string, json> >()){
-            string temp = i.second.at("set").dump();
-            if (temp[0] == '"' && temp[temp.size() - 1] == '"'){
-                temp.erase(temp.begin());
-                temp.erase(temp.end() - 1);
+            if (i.second.at("set").is_string()){
+                string temp = i.second.at("set").get<string>();
+                if (find(unhandle.begin(), unhandle.end(), temp) == unhandle.end()){
+                    debug << i.first << " " << temp << endl;
+                    result = result + (char) 0xa + (char) (int2RTONnum(atoi(i.first.c_str())).size() + 3) + (char) 0x8 + int2RTONnum(atoi(i.first.c_str())) + (char) 0x10 + (char) 0x4;
+                }
             }
-			if (find(unhandle.begin(), unhandle.end(), temp) == unhandle.end()){
-				result = result + (char) 0xa + (char) (int2RTONnum(atoi(i.first.c_str())).size() + 3) + (char) 0x8 + int2RTONnum(atoi(i.first.c_str())) + (char) 0x10 + (char) 0x4;
-			}
         }
     }
     catch (out_of_range e){
@@ -108,6 +107,7 @@ int main(){
     output.write((char *)&result[0], result.size());
     //output.write((char *)&heroes[0], 0x13f);
     output.close();
+    debug.close();
     puts("\nDone!\n");
     system("pause");
     return 0;
