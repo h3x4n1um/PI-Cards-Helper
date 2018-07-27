@@ -115,4 +115,3 @@ The Smash | Gargantuar | Zombie
 
 # Credits
 * Niels Lohmann for [his awesome JSON parser](https://github.com/nlohmann/json)
-```
