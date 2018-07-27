@@ -58,8 +58,7 @@ int main(){
     puts("Note: Currently, this tool create the PI with all cards\n");
     printf(R"(Enter "cards.json" (or "cards.txt") file path: )");
     string filePath;
-    filePath = R"(C:\Users\boly4\OneDrive\Games\Unity\PvZ Heroes\Beta\cards-CAB-9c7d1d782d8ce65074a2a14aa6e16aad-18366826355415369663.json)";
-    //getline(cin, filePath);
+    getline(cin, filePath);
     try{
         input.open(filePath);
         input >> js;
