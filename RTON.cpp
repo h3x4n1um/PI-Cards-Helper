@@ -1,7 +1,11 @@
-#define log256(x) log2(x) / 8
-
 #include <cmath>
 #include <cstdlib>
+
+//eww, misusing macros
+//#define log256(x) log2(x) / 8 <- don't do this pls
+constexpr auto log256(x) {
+    return log2(x) / 8;
+}
 
 //this implementation still has bug when convert 0xbe87f407 to 0xfd03be (correct would be 0x7e81df3b ~ 2 billions), kinda strange even I can't find why it would be 0x7e81df3b???
 //well maybe u did it wrong
