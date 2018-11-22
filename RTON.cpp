@@ -2,8 +2,9 @@
 #include <cstdlib>
 
 //eww, misusing macros
-//#define log256(x) log2(x) / 8 <- don't do this pls
-constexpr auto log256(x) {
+//#define log256(x) log2(x) / 8  //<- don't do this pls
+
+auto log256(double x) {
     return log2(x) / 8;
 }
 

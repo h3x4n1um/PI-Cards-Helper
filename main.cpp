@@ -14,16 +14,14 @@ char sep = '/';
 sep = '\\';
 #endif
 
-json js;
-
-PI inventory;
-vector<pair<int, int> > cards;
-
 int main() {
     //this is necessary to catch unexpected exceptions
-    ofstream output, debug;
-    ifstream input;
+    //ofstream output, debug;
+    //ifstream input;
     string filePath;
+    json js;
+    PI inventory;
+    vector<pair<int, int> > cards;
     const vector<string> unhandle = {
             "",
             "Board",
@@ -35,7 +33,7 @@ int main() {
             "cheats"
     };
 
-    const vector<pair<string, int> > heroes = {
+    /*const vector<pair<string, int>> heroes = {
             make_pair("Penelopea", 1),
             make_pair("Sunflower", 1),
             make_pair("NightCap", 1),
@@ -58,22 +56,17 @@ int main() {
             make_pair("Neptuna", 1),
             make_pair("ZMech", 1),
             make_pair("Gargantuar", 1)
-    };
+    };*/
     puts("PI Cards Helper made by H3x4n1um version 3.0.0");
     puts("Credits: nlohmann for his awesome JSON parser");
     puts("Note: Currently, this tool create the PI with all cards\n");
     printf(R"(Enter "cards.json" (or "cards.txt") file path: )");
     getline(cin, filePath);
     try {
+        ifstream input;
         input.open(filePath);
         input >> js;
-        input.close();
-        for (auto i = static_cast<unsigned int>(filePath.size())-1; i >= 0; --i) {
-            if (filePath[i] == sep) {
-                filePath = filePath.substr(0, i + 1);
-                break;
-            }
-        }
+        //input.close();
     }
     catch (invalid_argument& e) {
         _error();
@@ -86,30 +79,36 @@ int main() {
         cin.get();
         return 1;
     }
-    debug.open(filePath + "PI_Cards_Helper_debug.log");
-    try {
-        for (auto i : js.get<map<string, json> >()) {
-            if (i.second.at("set").is_string()) {
-                auto temp = i.second.at("set").get<string>();
-                if (find(unhandle.begin(), unhandle.end(), temp) == unhandle.end()) {
-                    debug << i.first << " " << temp << endl;
-                    cards.emplace_back(toInt(i.first.c_str()), 4);
+    for (auto i = static_cast<unsigned int>(filePath.size())-1; i >= 0; --i) {
+        if (filePath[i] == sep) {
+            filePath = filePath.substr(0, i + 1);
+            break;
+        }
+    }
+    {
+        //RAII - resource Acquisition Is Initialization (test)
+        ofstream debug;
+        debug.open(filePath + "PI_Cards_Helper_debug.log");
+        try {
+            for (auto i : js.get<map<string, json> >()) {
+                if (i.second.at("set").is_string()) {
+                    auto temp = i.second.at("set").get<string>();
+                    if (find(unhandle.begin(), unhandle.end(), temp) == unhandle.end()) {
+                        debug << i.first << " " << temp << endl;
+                        cards.emplace_back(toInt(i.first.c_str()), 4);
+                    }
                 }
             }
         }
-    }
-    catch (out_of_range& e) {
-        _error();
-        return 1;
+        catch (out_of_range& e) {
+            _error();
+            return 1;
+        }
     }
 
-    inventory.setHeroes(heroes);
+    //inventory.setHeroes(heroes);
     inventory.setCards(cards);
-
-    output.open(filePath + "PlayerInventoryAllCards", ios::binary);
-    inventory.write(output);
-    output.close();
-    debug.close();
+    inventory.write(filePath + "PlayerInventoryAllCards");
     puts("\nDone!\n");
     cin.get();
     return 0;

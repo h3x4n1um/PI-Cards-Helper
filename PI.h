@@ -1,3 +1,5 @@
+#include <utility>
+
 #include <fstream>
 #include <vector>
 #include <iostream>
@@ -13,7 +15,10 @@ public:
         return 0;
     }; //will be implement in future lmao*/
     //then don't implement it, jesus christ
-    int write(ofstream &output){
+    void write(const string &path){
+        ofstream output;
+        output.open(path, ios::binary);
+        auto heroes = allHeroes();
         //Cards
         for (auto i : cards){
             output.write(&CARD, 1);
@@ -36,16 +41,26 @@ public:
             output.write(&NUMBER, 1);
             output.write(reinterpret_cast<const char *> (&i.second), 1);
         }
-        return 0;
+
+        //test: Expecting ofstream "output" to self-destruct after this line
+        // if not, change it back
     };
-    int setHeroes(vector <pair <string, int> > heroes_list){
-        heroes = heroes_list;
-        return 0;
+    /*void setHeroes(vector<pair<string, int>> heroes_list){
+        heroes = std::move(heroes_list);
+    };*/
+    void setCards(vector<pair<int, int>> cards_list) {
+        cards = std::move(cards_list);
     };
-    int setCards(vector <pair <int, int> > cards_list){
-        cards = cards_list;
-        return 0;
-    };
+    vector<pair<string, int>> allHeroes() {
+        auto heroes = {"Penelopea", "Sunflower", "NightCap", "Grass_Knuckles", "BetaCarrotina", "Spudow", "Rose",
+                       "WallKnight", "Chomper", "Scortchwood", "Citron", "HugeGigantacus", "CptBrainz", "Professor",
+                       "Disco", "BrainFreeze", "Cyborg", "Witch", "Impfinity", "Neptuna", "ZMech", "Gargantuar"};
+        vector<pair<string, int>> rtn;
+        for (auto hero : heroes) {
+            rtn.emplace_back(hero, 1);
+        }
+        return rtn;
+    }
     //are you sure these parts are needed?
     /*
     int setGems(int q){
@@ -66,7 +81,7 @@ private:
     const char HERO = 0x12;
     const char NUMBER = 0x10;
     vector <pair <int, int> > cards; //the first will be card id and second is number of copies
-    vector <pair <string, int> > heroes; //list of hero codename
+    //vector <pair <string, int> > heroes; //list of hero codename
     //r u really sure?
     /*
     int gems;
