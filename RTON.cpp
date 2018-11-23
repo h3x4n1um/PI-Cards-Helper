@@ -11,7 +11,6 @@ auto log256(double x) {
 //this implementation still has bug when convert 0xbe87f407 to 0xfd03be (correct would be 0x7e81df3b ~ 2 billions), kinda strange even I can't find why it would be 0x7e81df3b???
 //well maybe u did it wrong
 
-//Note from MeowMeow: Try using lambda expression, hopefully
 int hexLength(int q) {
     return static_cast<int>(ceil(log256(q)) ? ceil(log256(q)) : 1);
 }
