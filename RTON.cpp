@@ -40,3 +40,11 @@ int int2RTONnum(int q) {
     int newSecondByte = int2RTONnum(secondByte);
     return static_cast<int>(firstByte * pow(0x100, hexLength(q)) + newSecondByte);
 }
+
+const char CARD = 0xa;
+const char HERO = 0x12;
+const char NUMBER = 0x10;
+
+const auto HEROES = {"Penelopea", "Sunflower", "NightCap", "Grass_Knuckles", "BetaCarrotina", "Spudow", "Rose",
+                     "WallKnight", "Chomper", "Scortchwood", "Citron", "HugeGigantacus", "CptBrainz", "Professor",
+                     "Disco", "BrainFreeze", "Cyborg", "Witch", "Impfinity", "Neptuna", "ZMech", "Gargantuar"};

@@ -6,6 +6,7 @@ using namespace std;
 using namespace nlohmann;
 
 int toInt(const char *);
+
 void _error();
 
 //defining file separator
@@ -68,18 +69,18 @@ int main() {
         input >> js;
         //input.close();
     }
-    catch (invalid_argument& e) {
+    catch (invalid_argument &e) {
         _error();
         return 1;
     }
-    catch (exception& e) {
+    catch (exception &e) {
         //there are OSes that, if you enter an empty argument, will throw an exception unrelated to invalid_argument
         //fix it
         cerr << "\nOh, so you're just messing around...\n";
         cin.get();
         return 1;
     }
-    for (auto i = static_cast<unsigned int>(filePath.size())-1; i >= 0; --i) {
+    for (auto i = static_cast<unsigned int>(filePath.size()) - 1; i >= 0; --i) {
         if (filePath[i] == sep) {
             filePath = filePath.substr(0, i + 1);
             break;
@@ -100,10 +101,11 @@ int main() {
                 }
             }
         }
-        catch (out_of_range& e) {
+        catch (out_of_range &e) {
             _error();
             return 1;
         }
+        //debug ofstream should auto close after this line
     }
 
     //inventory.setHeroes(heroes);
@@ -114,8 +116,8 @@ int main() {
     return 0;
 }
 
-int toInt(const char * str) {
-    char* end;
+int toInt(const char *str) {
+    char *end;
     long conv = strtol(str, &end, 10);
     if (!*end) {
         return static_cast<int>(conv);
