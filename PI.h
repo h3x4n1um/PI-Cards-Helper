@@ -15,7 +15,6 @@ public:
     /*int read(){
         return 0;
     }; //will be implement in future lmao*/
-    //then don't implement it, jesus christ
     void write(const string &path) {
         ofstream output;
         output.open(path, ios::binary);
@@ -61,7 +60,6 @@ public:
         }
         return rtn;
     }
-    //are you sure these parts are needed?
     /*
     int setGems(int q){
         gems = q;
@@ -79,7 +77,6 @@ public:
 private:
     vector<pair<int, int> > cards; //the first will be card id and second is number of copies
     //vector <pair <string, int> > heroes; //list of hero codename
-    //r u really sure?
     /*
     int gems;
     int sparks;
